@@ -1,11 +1,19 @@
 import { Fragment, useContext } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import './Expense.css'
 import AuthContext from "../../Context/authContext";
 
 const Expense = ()=>{
 
+    const history = useHistory()
+
     const ctx = useContext(AuthContext)
+
+    const logOutHandler = () => {
+        ctx.logOut()
+        history.replace('/login')
+
+    }
 
     const verificationHandler = (event)=> {
 
@@ -36,6 +44,8 @@ const Expense = ()=>{
             }
         })
 
+
+       
     }
 
     return(
@@ -56,6 +66,7 @@ const Expense = ()=>{
               <hr />
               <div className="d-flex btn">
                    <button onClick={verificationHandler}>Verify E-mail</button>
+                   <button onClick={logOutHandler}>Log Out</button>
               </div>
         </Fragment>
     )
