@@ -3,6 +3,8 @@ import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import './Expense.css'
 import AuthContext from "../../Context/authContext";
 import { Form , Table} from "react-bootstrap";
+import axios from "axios";
+
 
 
 const Expense = ()=>{
@@ -83,8 +85,35 @@ const Expense = ()=>{
 
         console.log(expenses)
 
+        const res = axios.post('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json',{
+            amount : amount,
+            description : description,
+            category : category
+        })
+
+        res.then(res => {
+            if(res.statusText == 'OK'){
+                console.log('Expense Added Successfully')
+            }
+            else{
+                console.log('error')
+            }
+        })
+
 
     }
+
+    const getData = axios.get('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json')
+
+    getData.then(res =>{
+
+        if(res.statusText == 'OK'){            
+            setExpenses(Object.values(res.data))
+        }
+        else{
+            console.log('error')
+        }
+    })
 
     return(
         <Fragment>
