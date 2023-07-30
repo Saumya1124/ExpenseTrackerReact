@@ -35,7 +35,7 @@ const Login = ()=>{
                 returnSecureToken : true,
             }),
             headers : {
-                'Content-Type':'application/JSON'
+                'Content-Type':'application/json'
             }
         })
 

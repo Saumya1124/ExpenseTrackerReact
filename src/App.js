@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import Login from "./components/Login/Login";
 import SignUp from "./components/SignUp/SignUp";
 import { Redirect, Route , Switch} from 'react-router-dom';
@@ -9,6 +9,8 @@ import ResetLogin from "./components/Login/ResetLogin";
 
 
 const App = () => {
+
+  const ctx = useContext(AuthContext)
 
   return (
 
@@ -29,7 +31,7 @@ const App = () => {
         </Route>
 
         <Route path="/expense">
-              <Expense></Expense>
+              {ctx.isLoggedIn ? <Expense></Expense> : <Redirect to='/login' />}              
         </Route>
 
         <Route path="/updateProfile">
