@@ -1,0 +1,22 @@
+.main{
+    height: 100vh;
+}
+.resetForm{
+    height: 300px;
+    padding: 30px;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+.resetBtn button{
+    background-color: white;
+    color: rgb(75, 75, 168);
+    height: 40px;
+    width: 120px;
+    border: 1px solid  rgb(75, 75, 168);
+    border-radius: 20px;
+
+}
+.resetLink{
+    text-decoration: none;
+    color: black;
+}

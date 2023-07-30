@@ -11,6 +11,8 @@ const Login = ()=>{
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
 
+    const [isLoading , setIsLoading] = useState(false)
+
     const history = useHistory()
 
     const ctx = useContext(AuthContext)
@@ -21,6 +23,8 @@ const Login = ()=>{
         
         const email = emailInputRef.current.value;
         const password = passwordInputRef.current.value;
+
+        setIsLoading(true)
 
         const res = fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDQxLmt-BOKxFBdkG6zrMXfQL2YwbzHBb8',
         {
@@ -36,6 +40,8 @@ const Login = ()=>{
         })
 
         res.then(res => {
+
+            setIsLoading(false)
 
             if(res.ok){
                 
@@ -79,7 +85,11 @@ const Login = ()=>{
                             <Form.Control type="password" required ref={passwordInputRef} />
                         </Form.Group>
                         <div className='d-flex justify-content-center '>
-                            <button className='btn'>LogIn</button>
+                            <Link to='/reset'>Forget Password?</Link>
+                        </div>
+                        <br />
+                        <div className='d-flex justify-content-center '>
+                            {!isLoading? <button className='btn'>LogIn</button> : <p>Loading ...</p>}
                         </div>                        
                     </Form>
 
