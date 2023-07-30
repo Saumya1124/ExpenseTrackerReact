@@ -27,7 +27,8 @@ const SignUp = () => {
                 method : 'POST',
                 body : JSON.stringify({
                     email : email,
-                    password : password
+                    password : password,
+                    returnSecureToken : true,
                 }),
                 headers : {
                     'Content-Type' : 'application/JSON',
@@ -65,7 +66,7 @@ const SignUp = () => {
                     
                     <Form onSubmit={submitHandler}>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>Email address</Form.Label>
+                            <Form.Label>Email</Form.Label>
                             <Form.Control type="email"  required ref={emailInputRef} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formGroupPassword">
@@ -86,7 +87,8 @@ const SignUp = () => {
                     <br />
 
                     <div className='d-flex justify-content-center'>
-                         <a>Have an account? Login</a>
+                        <Link to='/login'>Have an account? Login</Link>
+                         
                     </div>
                 </div>
             </div>
