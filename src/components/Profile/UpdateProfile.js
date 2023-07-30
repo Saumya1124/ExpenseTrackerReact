@@ -10,6 +10,28 @@ const UpdateProfile = () => {
 
     const ctx = useContext(AuthContext)
 
+    fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDQxLmt-BOKxFBdkG6zrMXfQL2YwbzHBb8',
+    {
+        method: 'POST',
+        body : JSON.stringify({
+            idToken : ctx.token,
+            returnSecureToken : true,
+        }),
+        headers : {
+            'Content-Type' : 'application/json'
+        }
+    })
+    .then(res => {
+        if(res.ok){
+            res.json().then(data => {
+                console.log(data)
+            })
+        }
+        else{
+            console.log('error')
+        }
+    })
+
     const submitHandler = (event) => {
 
         event.preventDefault()
