@@ -1,9 +1,10 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useContext, useRef, useState } from 'react';
 import './Login.css';
 
 import { Form , Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import AuthContext from '../../Context/authContext';
 
 const Login = ()=>{
 
@@ -11,6 +12,8 @@ const Login = ()=>{
     const passwordInputRef = useRef();
 
     const history = useHistory()
+
+    const ctx = useContext(AuthContext)
 
     const submitHandler = (event) => {
 
@@ -38,6 +41,7 @@ const Login = ()=>{
                 
                 return res.json().then(data => {
                     console.log(data)
+                    ctx.logIn(data.email , data.idToken)
                     history.replace('/expense')
 
                 })

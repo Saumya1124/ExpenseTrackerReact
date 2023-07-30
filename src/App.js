@@ -3,11 +3,15 @@ import Login from "./components/Login/Login";
 import SignUp from "./components/SignUp/SignUp";
 import { Redirect, Route , Switch} from 'react-router-dom';
 import Expense from "./components/Expenses/Expense";
+import UpdateProfile from "./components/Profile/UpdateProfile";
+import AuthContext, { AuthContextProvider } from "./Context/authContext";
 
 
 const App = () => {
 
   return (
+
+    <AuthContextProvider>
 
       <Switch >
 
@@ -27,7 +31,13 @@ const App = () => {
               <Expense></Expense>
         </Route>
 
+        <Route path="/updateProfile">
+              <UpdateProfile></UpdateProfile>
+        </Route>
+
       </Switch>
+
+    </AuthContextProvider>
   
       
   )

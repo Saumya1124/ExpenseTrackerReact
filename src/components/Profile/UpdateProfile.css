@@ -1,0 +1,34 @@
+.head{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.head button{
+    width: 120px;
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 20px;
+    color: red;
+}
+.name{
+    margin-bottom: 20px;
+}
+.name i{
+    font-size: 30px;
+    padding: 10px;
+}
+.name p {
+    padding: 10px;
+}
+.name input{
+    height: 25px;
+    width: 240px;
+    margin-top: 15px;
+}
+.btn button{
+    width: 120px;
+    height: 40px;
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 20px;
+    color: red;
+}

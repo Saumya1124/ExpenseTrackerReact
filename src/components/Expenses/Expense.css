@@ -1,0 +1,11 @@
+.para{
+    background-color: rgb(244, 227, 207);
+    padding: 2px 15px 2px 15px;
+    border-radius: 30px;
+}
+
+.link1{
+    text-decoration: none;
+    color:  rgb(75, 75, 168);
+    font-weight: bold;
+}
