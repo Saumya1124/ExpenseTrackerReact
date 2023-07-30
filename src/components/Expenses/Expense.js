@@ -1,8 +1,43 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import './Expense.css'
+import AuthContext from "../../Context/authContext";
 
 const Expense = ()=>{
+
+    const ctx = useContext(AuthContext)
+
+    const verificationHandler = (event)=> {
+
+        event.preventDefault()
+        const res = fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDQxLmt-BOKxFBdkG6zrMXfQL2YwbzHBb8',
+        {
+            method:'POST',
+            body: JSON.stringify({
+                requestType : 'VERIFY_EMAIL',
+                idToken : ctx.token
+            }),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        })
+
+        res.then(res => {
+
+            if(res.ok){
+                return res.json().then(data => {
+                    console.log('Verification mail send')
+                })
+            }
+            else{
+                
+                    console.log('error')
+            
+            }
+        })
+
+    }
+
     return(
         <Fragment>
               <br />
@@ -19,6 +54,9 @@ const Expense = ()=>{
               </div>
               
               <hr />
+              <div className="d-flex btn">
+                   <button onClick={verificationHandler}>Verify E-mail</button>
+              </div>
         </Fragment>
     )
 }
