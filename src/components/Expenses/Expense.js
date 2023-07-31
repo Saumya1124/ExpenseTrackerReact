@@ -1,9 +1,10 @@
-import { Fragment, useContext, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import './Expense.css'
 import AuthContext from "../../Context/authContext";
 import { Form , Table} from "react-bootstrap";
 import axios from "axios";
+import { Button } from "react-bootstrap";
 
 
 
@@ -16,6 +17,12 @@ const Expense = ()=>{
     const [isLoading , setIsLoading] = useState(false);
 
     const [expenses , setExpenses] = useState([]);
+
+    const [passExpense , setPassExpense] = useState([]);
+
+    const [isEditing , setIsEditing] = useState(false);
+
+    const [isLen , setIsLen] = useState(false)
 
     const history = useHistory();
 
@@ -63,7 +70,8 @@ const Expense = ()=>{
 
     }
 
-    // Expense Form
+    
+    // Adding Expense Data
 
     const submitHandler = (event) => {
 
@@ -81,39 +89,133 @@ const Expense = ()=>{
             category : category
         }
 
-        setExpenses([...expenses,data])
+        setExpenses([data,...expenses])
 
-        console.log(expenses)
 
-        const res = axios.post('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json',{
+        const postData = axios.post('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json',{
             amount : amount,
             description : description,
             category : category
         })
 
-        res.then(res => {
+        postData.then(res => {
             if(res.statusText == 'OK'){
                 console.log('Expense Added Successfully')
+
+                setExpenses([...expenses,data])
+
+                amountInputRef.current.value = '';
+                descriptionInputRef.current.value = '';
+                categoryInputRef.current.value = '' ;
+            }
+            
+        })
+        .catch( (err) => {console.log(err)})
+
+
+    }
+
+    // Get all expenses from firebase
+
+    useEffect ( () => {
+
+        const getData = axios.get('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json')
+
+        getData.then(res =>{
+
+            if(res.statusText == 'OK'){ 
+
+                setExpenses(Object.values(res.data))
+
+                setPassExpense(res.data)
+                setIsLen(true)
+               
+            }
+            
+        })
+        .catch((err)=>{console.log(err)})
+
+    
+    },[expenses , passExpense] )
+
+
+    // Edit an existing expense
+
+    const editHandler = (key) => {
+
+        localStorage.setItem('keyToEdit' , key)
+
+        setIsEditing(true)
+
+        const editData = axios.get(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`)
+
+        editData.then( (res) => {
+
+            if(res.statusText = 'OK'){
+
+                amountInputRef.current.value = res.data.amount ; 
+                descriptionInputRef.current.value = res.data.description ;
+                categoryInputRef.current.value = res.data.category ;
+
+            }
+            else{
+                console.log('error')
+            }
+
+
+        })
+
+    }
+
+    const updateEditHandler = (event)=> {
+
+        event.preventDefault()
+
+        const key = localStorage.getItem('keyToEdit')
+
+        const updatedExpense = {
+            amount : amountInputRef.current.value,
+            description : descriptionInputRef.current.value,
+            category : categoryInputRef.current.value
+        }
+
+        const updateData = axios.put(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`,updatedExpense)
+
+        updateData.then((res)=>{
+            
+            console.log('Updated Successfully')
+            amountInputRef.current.value = '';
+            descriptionInputRef.current.value = '';
+            categoryInputRef.current.value = '';
+
+            localStorage.removeItem('keyToEdit')
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+
+    }
+
+    // Deleting an existing expense
+
+    const deleteHandler = (key) => {
+
+        const deleteData = axios.delete(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`)
+
+        deleteData.then(res => {
+
+            if(res.statusText === 'OK'){
+                console.log('Deleted Successfully')
+                const updateExpense = { ...passExpense };
+                delete updateExpense[key];
+                setPassExpense(updateExpense);
             }
             else{
                 console.log('error')
             }
         })
-
-
-    }
-
-    const getData = axios.get('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json')
-
-    getData.then(res =>{
-
-        if(res.statusText == 'OK'){            
-            setExpenses(Object.values(res.data))
-        }
-        else{
-            console.log('error')
-        }
-    })
+        
+    }    
 
     return(
         <Fragment>
@@ -138,7 +240,7 @@ const Expense = ()=>{
 
               <div className="d-flex justify-content-center">
                    <div className="col-lg-5">
-                        <Form onSubmit={submitHandler}>
+                        <Form >
                                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                     <Form.Label>Amount</Form.Label>
                                     <Form.Control type="text"  required ref={amountInputRef} />
@@ -154,9 +256,19 @@ const Expense = ()=>{
                                     <option value="Travel">Travel</option>
                                 </Form.Select>
                                 <br />
-                                <div className='d-flex justify-content-center addExpense'>
+                                {/* <div className='d-flex justify-content-center addExpense'>
                                     <button>Add Expense</button>
-                                </div>                        
+                                </div>        */}
+                                {!isEditing && (
+                                    <Button variant="primary" type="submit" className="mt-3" onClick={submitHandler}>
+                                        Add Expense
+                                    </Button>
+                                    )}
+                                    {isEditing && (
+                                    <Button variant="primary" type="submit" className="mt-3" onClick={updateEditHandler}>
+                                        Update Expense
+                                    </Button>
+                                )}                 
                         </Form>
                    </div>
               </div>
@@ -168,19 +280,27 @@ const Expense = ()=>{
                    <Table striped bordered hover variant="light" className="container">
                         <thead>
                         <tr>
+                            <th>Sr.No.</th>
                             <th>Amount</th>
                             <th>Description</th>
                             <th>Category</th>
+                            <th>Edit / Delete</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {expenses.map((expense,index)=>(
-                            <tr key={index}>
-                                <td>${expense.amount}</td>
-                                <td>{expense.description}</td>
-                                <td>{expense.category}</td>
+                        
+                        { Object.keys(passExpense).map((key,index)=>(
+                            <tr key={key}>
+                                <td>{index + 1}</td>
+                                <td>${passExpense[key].amount}</td>
+                                <td>{passExpense[key].description}</td>
+                                <td>{passExpense[key].category}</td>
+                                <td><button onClick={() => editHandler(key)}>Edit</button>
+                                    <button onClick={ () => deleteHandler(key)}>Delete</button>
+                                </td>
+                               
                             </tr>
-                        ))}
+                        )) }
                         </tbody>
                     </Table>
               </div>
