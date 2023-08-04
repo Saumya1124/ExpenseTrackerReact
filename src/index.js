@@ -6,9 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContextProvider } from './Context/authContext';
+import { Provider } from 'react-redux';
+import store from './store/Index';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <Provider store={store}>
   <AuthContextProvider>
     <BrowserRouter>
         <React.StrictMode>
@@ -16,6 +19,7 @@ root.render(
         </React.StrictMode>
     </BrowserRouter>
   </AuthContextProvider>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

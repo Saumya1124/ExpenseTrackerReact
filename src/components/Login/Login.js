@@ -5,6 +5,8 @@ import { Form , Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import AuthContext from '../../Context/authContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { authActions } from '../../store/AuthSlice';
 
 const Login = ()=>{
 
@@ -16,6 +18,10 @@ const Login = ()=>{
     const history = useHistory()
 
     const ctx = useContext(AuthContext)
+
+    const auth = useSelector(state => state.auth)
+
+    const dispatch = useDispatch()
 
     const submitHandler = (event) => {
 
@@ -47,8 +53,12 @@ const Login = ()=>{
                 
                 return res.json().then(data => {
                     console.log(data)
-                    ctx.logIn(data.email , data.idToken)
+                    // ctx.logIn(data.email , data.idToken)
                     history.replace('/expense')
+                    dispatch(authActions.login({id : data.idToken , email : data.email}))
+                   
+                    
+                    
 
                 })
             }

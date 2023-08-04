@@ -5,6 +5,8 @@ import AuthContext from "../../Context/authContext";
 import { Form , Table} from "react-bootstrap";
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { expenseActions } from "../../store/ExpenseSlice";
 
 
 
@@ -28,11 +30,27 @@ const Expense = ()=>{
 
     const ctx = useContext(AuthContext);
 
+    const auth = useSelector(state => state.auth)
+
+    const email = (auth.email).split('@')
+
+    const userEmail = email[0]
+
+    const expenseData = useSelector(state => state.expense)
+
+    const dispatch = useDispatch()
+
+    var totalExpenseAmount = 0
+
+    const [isPremium , setIsPremium] = useState(false)
+    
+
 
     // User LogOut
 
     const logOutHandler = () => {
-        ctx.logOut()
+        // ctx.logOut()
+        auth.logOut({id : ' ' , email : ' '})
         history.replace('/login')
 
     }
@@ -92,7 +110,7 @@ const Expense = ()=>{
         setExpenses([data,...expenses])
 
 
-        const postData = axios.post('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json',{
+        const postData = axios.post(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/${userEmail}.json`,{
             amount : amount,
             description : description,
             category : category
@@ -119,7 +137,7 @@ const Expense = ()=>{
 
     useEffect ( () => {
 
-        const getData = axios.get('https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses.json')
+        const getData = axios.get(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/${userEmail}.json`)
 
         getData.then(res =>{
 
@@ -129,6 +147,10 @@ const Expense = ()=>{
 
                 setPassExpense(res.data)
                 setIsLen(true)
+
+                dispatch(expenseActions.addExpense(expenses))
+                
+                
                
             }
             
@@ -147,7 +169,7 @@ const Expense = ()=>{
 
         setIsEditing(true)
 
-        const editData = axios.get(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`)
+        const editData = axios.get(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/${userEmail}/${key}.json`)
 
         editData.then( (res) => {
 
@@ -179,7 +201,7 @@ const Expense = ()=>{
             category : categoryInputRef.current.value
         }
 
-        const updateData = axios.put(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`,updatedExpense)
+        const updateData = axios.put(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/${userEmail}/${key}.json`,updatedExpense)
 
         updateData.then((res)=>{
             
@@ -200,7 +222,7 @@ const Expense = ()=>{
 
     const deleteHandler = (key) => {
 
-        const deleteData = axios.delete(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/expenses/${key}.json`)
+        const deleteData = axios.delete(`https://expensetrackerreact-242ac-default-rtdb.firebaseio.com/${userEmail}/${key}.json`)
 
         deleteData.then(res => {
 
@@ -215,7 +237,26 @@ const Expense = ()=>{
             }
         })
         
-    }    
+    } 
+
+
+    useEffect(()=>{
+
+        expenseData.expenses.map( data => {
+            totalExpenseAmount = totalExpenseAmount + Number(data.amount)
+        })
+    
+        if (totalExpenseAmount > 10000){
+            setIsPremium(true)
+        }
+        else{
+            setIsPremium(false)
+        }
+    },[expenseData.expenses])
+
+    
+    
+    
 
     return(
         <Fragment>
@@ -260,12 +301,12 @@ const Expense = ()=>{
                                     <button>Add Expense</button>
                                 </div>        */}
                                 {!isEditing && (
-                                    <Button variant="primary" type="submit" className="mt-3" onClick={submitHandler}>
+                                    <Button variant="info" type="submit" className="mt-3" onClick={submitHandler}>
                                         Add Expense
                                     </Button>
                                     )}
                                     {isEditing && (
-                                    <Button variant="primary" type="submit" className="mt-3" onClick={updateEditHandler}>
+                                    <Button variant="info" type="submit" className="mt-3" onClick={updateEditHandler}>
                                         Update Expense
                                     </Button>
                                 )}                 
@@ -303,7 +344,15 @@ const Expense = ()=>{
                         )) }
                         </tbody>
                     </Table>
+
+                    {isPremium && 
+                        <div className="d-flex justify-content-center">
+                            <Button variant="info">Activate Premium</Button>
+                        </div>}
               </div>
+              <br />
+              <br />
+
         </Fragment>
     )
 }

@@ -6,11 +6,14 @@ import Expense from "./components/Expenses/Expense";
 import UpdateProfile from "./components/Profile/UpdateProfile";
 import AuthContext, { AuthContextProvider } from "./Context/authContext";
 import ResetLogin from "./components/Login/ResetLogin";
+import { useSelector } from "react-redux";
 
 
 const App = () => {
 
   const ctx = useContext(AuthContext)
+
+  const isAuth = useSelector(state => state.auth.isLogged)
 
   return (
 
@@ -27,11 +30,12 @@ const App = () => {
         </Route>
 
         <Route path="/login">
-              <Login></Login>
+              {!isAuth && <Login></Login>}
         </Route>
 
         <Route path="/expense">
-              {ctx.isLoggedIn ? <Expense></Expense> : <Redirect to='/login' />}              
+              {/* {ctx.isLoggedIn ? <Expense></Expense> : <Redirect to='/login' />}               */}
+              {isAuth ? <Expense></Expense> : <Redirect to='/login' />}
         </Route>
 
         <Route path="/updateProfile">

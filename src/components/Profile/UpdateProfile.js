@@ -2,6 +2,7 @@ import { Fragment , useContext, useRef } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import './UpdateProfile.css'
 import AuthContext from "../../Context/authContext";
+import { useSelector } from "react-redux";
 
 const UpdateProfile = () => {
 
@@ -10,11 +11,13 @@ const UpdateProfile = () => {
 
     const ctx = useContext(AuthContext)
 
+    const auth = useSelector(state => state.auth)
+
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDQxLmt-BOKxFBdkG6zrMXfQL2YwbzHBb8',
     {
         method: 'POST',
         body : JSON.stringify({
-            idToken : ctx.token,
+            idToken : auth.token,
             returnSecureToken : true,
         }),
         headers : {
@@ -45,7 +48,7 @@ const UpdateProfile = () => {
         {
             method : 'POST',
             body : JSON.stringify({
-                idToken: ctx.token,
+                idToken: auth.token,
                 name : name,
                 photo : photo,
                 returnSecureToken: true,
