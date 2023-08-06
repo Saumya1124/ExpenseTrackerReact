@@ -32,3 +32,19 @@
     border-radius: 20px;
     color: red;
 }
+.dark1{
+    height: 100vh;
+    background-color: black;
+}
+.dark1 h4{
+    color: white;
+}
+.dark1 h3{
+    color: white;
+}
+.dark1 p{
+    color: white;
+}
+.dark1 i{
+    color: white;
+}

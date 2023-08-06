@@ -7,6 +7,8 @@ import axios from "axios";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../../store/ExpenseSlice";
+import { themeAction } from "../../store/ThemeSlice";
+import { saveAs } from 'file-saver';
 
 
 
@@ -43,6 +45,8 @@ const Expense = ()=>{
     var totalExpenseAmount = 0
 
     const [isPremium , setIsPremium] = useState(false)
+
+    const theme = useSelector(state => state.theme.theme)
     
 
 
@@ -54,6 +58,7 @@ const Expense = ()=>{
         history.replace('/login')
 
     }
+
 
     // User E-mail verification
 
@@ -254,14 +259,31 @@ const Expense = ()=>{
         }
     },[expenseData.expenses])
 
-    
-    
+    // Theme Toggler 
+
+    const themeToggler = () => {
+        dispatch(themeAction.themeChanger())
+    }
+
+
+    const expenseDownloader = (event) => {
+
+        event.preventDefault()
+
+        const csv = "Category,Description,Amount\n" + Object.values(passExpense).map( ({category,description,amount}) => `${category},${description},${amount}`).join('\n')
+
+        const blob = new Blob([csv],{type : 'text/csv'})
+
+        saveAs(blob , expenses.csv)
+
+    }
     
 
     return(
         <Fragment>
+            <div className={theme ? 'dark' : 'light'}>
               <br />
-              <div className="d-flex ">
+              <div className="d-flex head">
                     <div className="col-lg-6 col-md-6 col-12">
                         <h4 className="p-2">Welcome to Expense Tracker !!!</h4>
                     </div>
@@ -274,6 +296,15 @@ const Expense = ()=>{
               </div>
               
               <hr />
+
+              <div className="hr"></div>
+
+              {isPremium && 
+                    <div className="d-flex justify-content-end">
+                        <Button className='m-2' variant="secondary" onClick={themeToggler}>Change Theme</Button>
+                    </div>
+              }
+              
               <div className="d-flex justify-content-end verifyBtn">
                    <button onClick={verificationHandler}>Verify E-mail</button>
                    <button onClick={logOutHandler}>Log Out</button>
@@ -336,8 +367,8 @@ const Expense = ()=>{
                                 <td>${passExpense[key].amount}</td>
                                 <td>{passExpense[key].description}</td>
                                 <td>{passExpense[key].category}</td>
-                                <td><button onClick={() => editHandler(key)}>Edit</button>
-                                    <button onClick={ () => deleteHandler(key)}>Delete</button>
+                                <td><Button variant = 'secondary' onClick={() => editHandler(key)}>Edit</Button>
+                                    <Button variant='secondary' onClick={ () => deleteHandler(key)}>Delete</Button>
                                 </td>
                                
                             </tr>
@@ -347,11 +378,15 @@ const Expense = ()=>{
 
                     {isPremium && 
                         <div className="d-flex justify-content-center">
-                            <Button variant="info">Activate Premium</Button>
+                            <Button variant="info" className="m-1">Activate Premium</Button>
+                            <Button variant="info" onClick={expenseDownloader} className="m-1">Download Expenses</Button>
                         </div>}
               </div>
+              
               <br />
               <br />
+
+              </div>
 
         </Fragment>
     )

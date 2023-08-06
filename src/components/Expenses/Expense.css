@@ -32,3 +32,16 @@
     color: white;
     border: none;
 }
+.dark{
+    background-color: black;
+}
+.dark h4{
+    color: white;
+}
+.dark label{
+    color: white;
+}
+.dark .hr{
+    width: 100%;
+    border-bottom: 1px solid white;
+}

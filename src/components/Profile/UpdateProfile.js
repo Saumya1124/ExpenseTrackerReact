@@ -13,6 +13,8 @@ const UpdateProfile = () => {
 
     const auth = useSelector(state => state.auth)
 
+    const theme = useSelector(state => state.theme.theme)
+
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDQxLmt-BOKxFBdkG6zrMXfQL2YwbzHBb8',
     {
         method: 'POST',
@@ -81,6 +83,7 @@ const UpdateProfile = () => {
     return (
         
         <Fragment>
+             <div className={theme? 'dark1' : 'light1'}>
               <br />
               <div className="d-flex ">
                     <div className="col-lg-6 col-md-6 col-12">
@@ -97,6 +100,8 @@ const UpdateProfile = () => {
               <hr />
 
               <br />
+
+              
 
               <div className="d-flex justify-content-center">
                    
@@ -151,6 +156,8 @@ const UpdateProfile = () => {
               <br />
 
               <hr />
+
+              </div>
 
               
               
