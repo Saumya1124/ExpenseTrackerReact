@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../../store/ExpenseSlice";
 import { themeAction } from "../../store/ThemeSlice";
 import { saveAs } from 'file-saver';
+import { authActions } from "../../store/AuthSlice";
 
 
 
@@ -54,7 +55,7 @@ const Expense = ()=>{
 
     const logOutHandler = () => {
         // ctx.logOut()
-        auth.logOut({id : ' ' , email : ' '})
+        dispatch(authActions.logOut({id : '',email:''}))
         history.replace('/login')
 
     }
@@ -382,7 +383,7 @@ const Expense = ()=>{
                             <Button variant="info" onClick={expenseDownloader} className="m-1">Download Expenses</Button>
                         </div>}
               </div>
-              
+
               <br />
               <br />
 
