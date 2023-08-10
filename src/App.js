@@ -18,7 +18,7 @@ const App = () => {
   return (
 
     <AuthContextProvider>
-
+      
       <Switch >
 
         <Route path="/" exact >

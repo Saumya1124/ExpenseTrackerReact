@@ -17,9 +17,9 @@ const Login = ()=>{
 
     const history = useHistory()
 
-    const ctx = useContext(AuthContext)
+    // const ctx = useContext(AuthContext)
 
-    const auth = useSelector(state => state.auth)
+    // const auth = useSelector(state => state.auth)
 
     const dispatch = useDispatch()
 
